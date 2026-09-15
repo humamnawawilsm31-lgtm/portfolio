@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portofolio Humam Nawawi</title>
+    <!-- Font Awesome untuk Ikon -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- HEADER UTAMA TUNGGAL -->
+    <header class="main-header">
+      <div class="header-container">
+        <!-- Tombol Garis Tiga (Sidebar Trigger) -->
+        <button id="toggle-menu" class="menu-btn" aria-label="Open Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <a href="#" class="logo-brand">
+          <i class="fa-solid fa-chart-line"></i> HN Financial
+        </a>
+      </div>
+    </header>
+
+    <!-- SIDEBAR DRAWER MENU -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="sidebar-menu" class="sidebar-drawer">
+      <div class="sidebar-header">
+        <h3><i class="fa-solid fa-chart-line"></i> HN Menu</h3>
+        <button id="close-menu" class="close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <ul class="sidebar-links">
+        <li>
+          <a
+            href="#"
+            id="open-forex"
+            class="sidebar-link"
+            onclick="openForexModal(event)"
+          >
+            <i class="fa-solid fa-calculator"></i>
+            <span>Money Management Forex</span>
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            id="open-btc"
+            class="sidebar-link"
+            onclick="openBtcModal(event)"
+          >
+            <i class="fa-brands fa-bitcoin"></i>
+            <span>Cicil Bitcoin</span>
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            id="open-compound"
+            class="sidebar-link"
+            onclick="openCompoundModal(event)"
+          >
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Kalkulator Compounding</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- 3. Modal Popup Tabel Money Management Forex -->
+    <div id="forex-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fa-solid fa-chart-pie"></i> Money Management Forex</h2>
+          <button id="close-forex" class="close-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Form Input Data (Khusus Kamu) -->
+          <form id="forex-form" class="forex-form">
+            <div class="form-group">
+              <label>Pasangan Mata Uang (Pair)</label>
+              <input
+                type="text"
+                id="pair"
+                placeholder="Contoh: XAUUSD / EURUSD"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Modal (USD)</label>
+              <input
+                type="number"
+                id="balance"
+                placeholder="1000"
+                step="any"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Lot Size</label>
+              <input
+                type="number"
+                id="lot"
+                placeholder="0.01"
+                step="0.01"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Risk (%)</label>
+              <input
+                type="number"
+                id="risk"
+                placeholder="1"
+                step="0.1"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-plus"></i> Tambah Data
+            </button>
+          </form>
+
+          <!-- Tabel Data Jurnal Money Management -->
+          <div class="table-container">
+            <table class="forex-table">
+              <thead>
+                <tr>
+                  <th>Pair</th>
+                  <th>Modal ($)</th>
+                  <th>Lot</th>
+                  <th>Risk (%)</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="forex-table-body">
+                <!-- Data dari JS akan muncul di sini -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Header & Sidebar Navigation -->
+    <header>
+      <!-- 
+
+        
+      <!-- MODAL CICIL BITCOIN -->
+      <div id="btc-modal" class="modal">
+        <div class="modal-content modal-large">
+          <!-- Header Modal -->
+          <div class="modal-header">
+            <h2>
+              <i class="fa-brands fa-bitcoin"></i> Jurnal Cicil Bitcoin (DCA
+              Mingguan)
+            </h2>
+            <div class="modal-actions">
+              <button id="btn-btc-admin-login" class="btn-admin">
+                <i class="fa-solid fa-lock"></i> Mode Edit
+              </button>
+              <button class="close-btn" onclick="closeBtcModal()">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Body Modal -->
+          <div class="modal-body">
+            <!-- Form Input Khusus Admin (Bisa diisi jika PIN benar) -->
+            <form
+              id="btc-form"
+              class="btc-form admin-only"
+              style="display: none"
+            >
+              <div class="form-group">
+                <label>Minggu ke-</label>
+                <input type="number" id="btc-minggu" placeholder="1" required />
+              </div>
+              <div class="form-group">
+                <label>Hari / Tanggal</label>
+                <input type="date" id="btc-tanggal" required />
+              </div>
+              <div class="form-group">
+                <label>Setoran (IDR)</label>
+                <input
+                  type="number"
+                  id="btc-setoran"
+                  placeholder="100000"
+                  step="any"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Harga BTC (USD)</label>
+                <input
+                  type="number"
+                  id="btc-harga-usd"
+                  placeholder="60000"
+                  step="any"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Kurs USD ke IDR</label>
+                <input
+                  type="number"
+                  id="btc-kurs-idr"
+                  placeholder="15500"
+                  value="15500"
+                  step="any"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn-submit">
+                <i class="fa-solid fa-plus"></i> Tambah / Simpan Data
+              </button>
+            </form>
+
+            <!-- Tabel Jurnal DCA -->
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Minggu</th>
+                    <th>Hari / Tanggal</th>
+                    <th>Setoran (IDR)</th>
+                    <th>Harga BTC (USD)</th>
+                    <th>Dapat BTC</th>
+                    <th>Total Akumulasi BTC</th>
+                    <th class="admin-only" style="display: none">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="btc-table-body">
+                  <!-- Diisi otomatis oleh JavaScript -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Dashboard Ringkasan / Summary -->
+            <div class="btc-summary">
+              <div class="summary-card">
+                <i class="fa-solid fa-wallet"></i>
+                <div>
+                  <span>Total Investasi:</span>
+                  <strong id="btc-sum-investasi">Rp 0</strong>
+                </div>
+              </div>
+              <div class="summary-card gold-card">
+                <i class="fa-brands fa-bitcoin"></i>
+                <div>
+                  <span>Total BTC Terkumpul:</span>
+                  <strong id="btc-sum-total-btc">0.00000000 BTC</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal Kalkulator Compounding Interest -->
+      <div id="compound-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>
+              <i class="fa-solid fa-chart-line"></i> Kalkulator Compounding
+              Interest
+            </h2>
+            <button class="close-btn" onclick="closeCompoundModal()">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <form id="compound-form" onsubmit="calculateCompound(event)">
+              <!-- Pilihan Tipe Investasi -->
+              <div class="form-group mb-3">
+                <label class="form-label">Tipe Investasi</label>
+                <div class="investment-type-container">
+                  <button
+                    type="button"
+                    class="type-btn active"
+                    id="btn-averaging"
+                    onclick="setInvestmentType('averaging')"
+                  >
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <div>
+                      <strong>Deposit Tiap Bulan</strong>
+                      <small>(Averaging)</small>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    class="type-btn"
+                    id="btn-lump-sump"
+                    onclick="setInvestmentType('lumpsum')"
+                  >
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <div>
+                      <strong>Deposit Sekali</strong>
+                      <small>(Lump Sump)</small>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Input Modal / Deposit -->
+              <div class="form-row">
+                <div class="form-group" id="group-initial">
+                  <label for="initial-deposit">Modal Awal (Rp)</label>
+                  <input
+                    type="number"
+                    id="initial-deposit"
+                    placeholder="Contoh: 1000000"
+                    value="1000000"
+                    required
+                  />
+                </div>
+                <div class="form-group" id="group-monthly">
+                  <label for="monthly-contribution"
+                    >Deposit per bulan (Rp)</label
+                  >
+                  <input
+                    type="number"
+                    id="monthly-contribution"
+                    placeholder="Contoh: 500000"
+                    value="500000"
+                  />
+                </div>
+              </div>
+
+              <!-- Input Jangka Waktu & Bunga -->
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="annual-rate">Bunga / Return % pertahun</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="annual-rate"
+                    placeholder="Contoh: 10"
+                    value="10"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="investment-years">Jangka Waktu (tahun)</label>
+                  <input
+                    type="number"
+                    id="investment-years"
+                    placeholder="Contoh: 5"
+                    value="5"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Tombol Hitung & Reset -->
+              <div class="action-btn-group">
+                <button type="submit" class="btn-submit">
+                  <i class="fa-solid fa-calculator"></i> Hitung
+                </button>
+                <button
+                  type="button"
+                  class="btn-reset"
+                  onclick="resetCompoundForm()"
+                >
+                  <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+              </div>
+            </form>
+
+            <!-- Hasil Perhitungan -->
+            <div
+              id="compound-results"
+              class="compound-results"
+              style="display: none"
+            >
+              <div class="result-card">
+                <span>Total Modal Investasi</span>
+                <h3 id="res-total-deposit">Rp 0</h3>
+              </div>
+              <div class="result-card">
+                <span>Total Bunga / Keuntungan</span>
+                <h3 id="res-total-interest" class="text-green">Rp 0</h3>
+              </div>
+              <div class="result-card highlight">
+                <span>Estimasi Nilai Akhir</span>
+                <h3 id="res-final-balance" class="text-green">Rp 0</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sidebar / Off-canvas Menu Keuangan -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3><i class="fa-solid fa-wallet"></i> Manajemen Keuangan</h3>
+        <button class="close-btn" id="closeBtn">&times;</button>
+      </div>
+      <ul class="sidebar-menu">
+        <li>
+          <a href="#ringkasan"
+            ><i class="fa-solid fa-chart-pie"></i> Ringkasan Keuangan</a
+          >
+        </li>
+        <li>
+          <a href="#pemasukan-pengeluaran"
+            ><i class="fa-solid fa-money-bill-transfer"></i> Catatan Pemasukan &
+            Pengeluaran</a
+          >
+        </li>
+        <li>
+          <a href="#alokasi-investasi"
+            ><i class="fa-solid fa-piggy-bank"></i> Alokasi Investasi</a
+          >
+        </li>
+        <li>
+          <a href="#target-finansial"
+            ><i class="fa-solid fa-bullseye"></i> Target Finansial</a
+          >
+        </li>
+        <li>
+          <a href="#agenda-finansial"
+            ><i class="fa-solid fa-calendar-check"></i> Agenda & Tagihan
+            Kedepan</a
+          >
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Overlay Gelap saat Sidebar Terbuka -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Hero Section: Nama & Foto -->
+      <section class="hero-section">
+        <div class="container hero-container">
+          <div class="hero-text">
+            <span class="badge"
+              ><i class="fa-solid fa-shield-halved"></i> Financial & Career
+              Portfolio</span
+            >
+            <h1>PORTOFOLIO HUMAM NAWAWI</h1>
+            <p class="hero-subtitle">
+              Membangun Masa Depan Finansial yang Kuat & Berkelanjutan
+            </p>
+            <div class="hero-cta">
+              <a href="#visi-misi" class="btn btn-primary"
+                ><i class="fa-solid fa-compass"></i> Visi & Misi</a
+              >
+              <a href="#riwayat-pendidikan" class="btn btn-primary">
+                <i class="fa-solid fa-graduation-cap"></i> Riwayat Pendidikan
+              </a>
+            </div>
+          </div>
+          <div class="hero-image-wrapper">
+            <!-- Pastikan file foto diposisikan di folder images/profile.jpg -->
+            <img
+              src="images/profile.jpg"
+              alt="Foto Humam Nawawi"
+              class="hero-image"
+              onerror="
+                this.src =
+                  'https://via.placeholder.com/350x420?text=Foto+Humam+Nawawi'
+              "
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Visi & Misi Kehidupan Masa Depan -->
+      <section id="visi-misi" class="visi-misi-section">
+        <div class="container">
+          <h2 class="section-title">
+            <i class="fa-solid fa-lightbulb"></i> Visi & Misi Kehidupan Masa
+            Depan
+          </h2>
+          <div class="visi-misi-grid">
+            <!-- Kartu Visi -->
+            <div class="vm-card visi-card">
+              <div class="vm-header">
+                <div class="vm-icon"><i class="fa-solid fa-eye"></i></div>
+                <h3>Visi Utama</h3>
+              </div>
+              <p class="vm-text">
+                Mencapai kebebasan finansial (<em>financial freedom</em>) di
+                usia muda melalui pengelolaan aset yang terukur, investasi
+                berkelanjutan, serta pengembangan karir secara profesional.
+              </p>
+            </div>
+
+            <!-- Kartu Misi -->
+            <div class="vm-card misi-card">
+              <div class="vm-header">
+                <div class="vm-icon"><i class="fa-solid fa-bullseye"></i></div>
+                <h3>Misi Strategis</h3>
+              </div>
+              <ul class="vm-list">
+                <li>
+                  <div class="list-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                  </div>
+                  <span
+                    >Mengembangkan portofolio investasi yang
+                    <em>diversified</em> dan berisiko terukur.</span
+                  >
+                </li>
+                <li>
+                  <div class="list-icon">
+                    <i class="fa-solid fa-briefcase"></i>
+                  </div>
+                  <span
+                    >Membangun karir yang berdampak positif dan bernilai
+                    tinggi.</span
+                  >
+                </li>
+                <li>
+                  <div class="list-icon">
+                    <i class="fa-solid fa-wallet"></i>
+                  </div>
+                  <span
+                    >Menjaga kedisiplinan alokasi keuangan harian dan jangka
+                    panjang.</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Riwayat Pendidikan & Media Sosial -->
+      <section id="riwayat-pendidikan" class="karir-section">
+        <div class="container">
+          <h2 class="section-title">
+            <i class="fa-solid fa-graduation-cap"></i> Riwayat Pendidikan
+          </h2>
+
+          <div class="pendidikan-grid">
+            <!-- Kolom Kiri: Timeline Pendidikan -->
+            <div class="timeline">
+              <!-- 1. TK -->
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content card-compact">
+                  <span class="timeline-date"
+                    ><i class="fa-solid fa-child"></i> Pendidikan Usia
+                    Dini</span
+                  >
+                  <h3>TK Srikandi</h3>
+                </div>
+              </div>
+
+              <!-- 2. MIN -->
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content card-compact">
+                  <span class="timeline-date"
+                    ><i class="fa-solid fa-school"></i> Sekolah Dasar / MI</span
+                  >
+                  <h3>MIN 4 Lhokseumawe</h3>
+                </div>
+              </div>
+
+              <!-- 3. SMP Pesantren -->
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content card-compact">
+                  <span class="timeline-date"
+                    ><i class="fa-solid fa-book-quran"></i> Sekolah Menengah
+                    Pertama</span
+                  >
+                  <h3>SMP Berbasis Pesantren An-Nahla Lhokseumawe</h3>
+                </div>
+              </div>
+
+              <!-- 4. SMA Ummul Quran -->
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content card-compact">
+                  <span class="timeline-date"
+                    ><i class="fa-solid fa-building-columns"></i> Sekolah
+                    Menengah Atas</span
+                  >
+                  <h3>SMA Ummul Quran Kabupaten Pidie</h3>
+                </div>
+              </div>
+
+              <!-- 5. Perguruan Tinggi (Saat Ini) -->
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content card-compact active-card">
+                  <span class="timeline-date highlight-badge"
+                    ><i class="fa-solid fa-spinner fa-spin"></i> Sedang Menempuh
+                    Pendidikan</span
+                  >
+                  <h3>S1 Teknologi Informasi</h3>
+                  <h4 class="sub-institution">
+                    Universitas Islam Negeri Ar-Raniry Banda Aceh
+                  </h4>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kolom Kanan: Kartu Media Sosial Eksklusif -->
+            <div class="social-sidebar">
+              <div class="social-card">
+                <div class="social-header">
+                  <i class="fa-solid fa-paper-plane"></i>
+                  <h3>Hubungi & Ikuti Saya</h3>
+                </div>
+                <p class="social-desc">
+                  Mari terhubung dan berdiskusi seputar teknologi, finansial,
+                  atau peluang kolaborasi melalui media sosial berikut:
+                </p>
+
+                <div class="social-links">
+                  <!-- WhatsApp -->
+                  <a
+                    href="https://wa.me/6285270736565"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="social-btn wa"
+                  >
+                    <div class="social-icon">
+                      <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <div class="social-info">
+                      <span class="social-name">WhatsApp</span>
+                      <span class="social-detail">Kirim Pesan Langsung</span>
+                    </div>
+                    <i
+                      class="fa-solid fa-arrow-up-right-from-square arrow-icon"
+                    ></i>
+                  </a>
+
+                  <!-- Instagram -->
+                  <a
+                    href="https://instagram.com/humamkrn_"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="social-btn ig"
+                  >
+                    <div class="social-icon">
+                      <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    <div class="social-info">
+                      <span class="social-name">Instagram</span>
+                      <span class="social-detail">Lihat Aktivitas Harian</span>
+                    </div>
+                    <i
+                      class="fa-solid fa-arrow-up-right-from-square arrow-icon"
+                    ></i>
+                  </a>
+
+                  <!-- TikTok -->
+                  <a
+                    href="https://tiktok.com/@st0ryl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="social-btn tiktok"
+                  >
+                    <div class="social-icon">
+                      <i class="fa-brands fa-tiktok"></i>
+                    </div>
+                    <div class="social-info">
+                      <span class="social-name">TikTok</span>
+                      <span class="social-detail">Konten & Inovasi</span>
+                    </div>
+                    <i
+                      class="fa-solid fa-arrow-up-right-from-square arrow-icon"
+                    ></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>&copy; 2026 Humam Nawawi. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <div id="compound-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>
+            <i class="fa-solid fa-chart-line"></i> Kalkulator Compounding
+            Interest
+          </h2>
+          <button class="close-btn" onclick="closeCompoundModal()">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form id="compound-form" onsubmit="calculateCompound(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Modal Awal ($)</label>
+                <input
+                  type="number"
+                  id="initial-deposit"
+                  value="1000"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Setoran Bulanan ($)</label>
+                <input type="number" id="monthly-contribution" value="100" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Estimasi Return per Tahun (%)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  id="annual-rate"
+                  value="12"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>Jangka Waktu (Tahun)</label>
+                <input type="number" id="investment-years" value="5" required />
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+              <i class="fa-solid fa-calculator"></i> Hitung Investasi
+            </button>
+          </form>
+
+          <!-- Hasil Perhitungan -->
+          <div
+            id="compound-results"
+            class="compound-results"
+            style="display: none"
+          >
+            <div class="result-card">
+              <span>Total Modal Investasi</span>
+              <h3 id="res-total-deposit">$0</h3>
+            </div>
+            <div class="result-card">
+              <span>Total Bunga / Keuntungan</span>
+              <h3 id="res-total-interest" class="text-green">$0</h3>
+            </div>
+            <div class="result-card highlight">
+              <span>Estimasi Nilai Akhir</span>
+              <h3 id="res-final-balance" class="text-green">$0</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
